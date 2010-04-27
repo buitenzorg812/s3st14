@@ -1,6 +1,6 @@
 <?php
 /**
- * SENAYAN application global file configuration
+ * SENAYAN application global configuration file
  *
  * Copyright (C) 2010  Arie Nugraha (dicarve@yahoo.com), Hendro Wicaksono (hendrowicaksono@yahoo.com), Wardiyono (wynerst@gmail.com)
  *
@@ -232,8 +232,15 @@ $sysconf['loan_limit_override'] = false;
 /* LOAN DATE CHANGE IN CIRCULATION */
 $sysconf['allow_loan_date_change'] = false;
 
-/* CIRCULATION RECEIPT */
+/* CIRCULATION RELATED */
 $sysconf['circulation_receipt'] = false;
+
+/* NOTIFICATION RELATED */
+$sysconf['transaction_finished_notification'] = false;
+$sysconf['bibliography_update_notification'] = true;
+$sysconf['bibliography_item_update_notification'] = true;
+$sysconf['login_message'] = false;
+$sysconf['logout_message'] = false;
 
 /* FILE UPLOADS */
 $sysconf['max_upload'] = intval(ini_get('upload_max_filesize'))*1024;

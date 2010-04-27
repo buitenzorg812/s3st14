@@ -68,10 +68,10 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
         if (isset($biblio_custom_fields)) {
             if (is_array($biblio_custom_fields) && $biblio_custom_fields) {
                 foreach ($biblio_custom_fields as $fid => $cfield) {
-                    // custom field
+                    // custom field data
                     $cf_dbfield = $cfield['dbfield'];
                     if (isset($_POST[$cf_dbfield]) AND trim($_POST[$cf_dbfield]) != '') {
-                        $data[$cf_dbfield] = trim($dbs->escape_string(strip_tags($_POST[$cf_dbfield], $sysconf['content']['allowable_tags'])));
+                        $custom_data[$cf_dbfield] = trim($dbs->escape_string(strip_tags($_POST[$cf_dbfield], $sysconf['content']['allowable_tags'])));
                     }
                 }
             }
@@ -164,11 +164,17 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
             unset($data['input_date']);
             // filter update record ID
             $updateRecordID = (integer)$_POST['updateRecordID'];
-            // update the data
+            // update data
             $update = $sql_op->update('biblio', $data, 'biblio_id='.$updateRecordID);
+            // update custom data
+            if (isset($custom_data)) {
+                $update2 = @$sql_op->update('biblio_custom', $custom_data, 'biblio_id='.$updateRecordID);
+            }
             // send an alert
             if ($update) {
-                utility::jsAlert(__('Bibliography Data Successfully Updated'));
+            	if ($sysconf['bibliography_update_notification']) {
+                    utility::jsAlert(__('Bibliography Data Successfully Updated'));
+			    }
                 // auto insert catalog to UCS if enabled
                 if ($sysconf['ucs']['enable']) {
                     echo '<script type="text/javascript">parent.ucsUpload(\''.MODULES_WEB_ROOT_DIR.'bibliography/ucs_upload.php\', \'itemID[]='.$updateRecordID.'\', false);</script>';
@@ -210,6 +216,12 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
                         $sql_op->insert('biblio_attachment', array('biblio_id' => $last_biblio_id, 'file_id' => $attachment['file_id'], 'access_type' => $attachment['access_type']));
                     }
                 }
+                // insert custom data
+                if ($custom_data) {
+                    $custom_data['biblio_id'] = $last_biblio_id;
+                    @$sql_op->insert('biblio_custom', $custom_data);
+                }
+
                 utility::jsAlert(__('New Bibliography Data Successfully Saved'));
                 // write log
                 utility::writeLogs($dbs, 'staff', $_SESSION['uid'], 'bibliography', $_SESSION['realname'].' insert bibliographic data ('.$data['title'].') with biblio_id ('.$last_biblio_id.')');
