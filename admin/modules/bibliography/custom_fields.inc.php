@@ -24,14 +24,14 @@
  * Here you can add custom field to SLiMS Bibliographic database
  * The field you define here must also exists in 'biblio_custom' table in database
  * field 'type' can be on of these: 'text', 'longtext', 'numeric', 'dropdown', 'checklist', 'date' or 'choice'
- *
+ * Before adding a new field within the biblio_custom table, you MUST create one field, called biblio_id, with the
+ * same settings as biblio_id inside biblio table without AUTO_INCREMENT option and unique indexing feature
  */
 
-/*
-$biblio_custom_fields = array(
-	'customfield1' => array(
-		'dbfield' => 'customfield1', // name of field in 'biblio_custom' table in database, make sure you already define it!
-		'label' => __('Custom Field 1'), // label of field in form
+/* $biblio_custom_fields = array(
+	'biblio_custom_test' => array(
+		'dbfield' => 'biblio_custom_test', // name of field in 'biblio_custom' table in database, make sure you already define it!
+		'label' => __('Test'), // label of field in form
 		'type' => 'text', // type of field
 		'default' => '', // default value of field
 		'max' => '50', // maximum character to enter in 'text' field type
@@ -78,6 +78,6 @@ $biblio_custom_fields = array(
 		'label' => __('Custom Field 5'),
 		'default' => date('Y-m-d'),
 		'type' => 'date')
-);
-*/
+
+);*/
 ?>
