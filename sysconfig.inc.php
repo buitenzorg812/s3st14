@@ -398,7 +398,7 @@ $sysconf['ucs']['auto_insert'] = false;
 /**
  * Peer to peer server config
  */
-$sysconf['p2pserver'][1] = array('uri' => 'http://127.0.0.1/senayan3-stable14', 'name' => 'SLiMS Library');
+$sysconf['p2pserver'][1] = array('uri' => 'http://127.0.0.1/senayan2-stable14', 'name' => 'SLiMS Library');
 
 // check if session is auto started and then destroy it
 if ($is_auto = @ini_get('session.auto_start')) { define('SESSION_AUTO_STARTED', $is_auto); }
