@@ -26,6 +26,7 @@ require '../../../sysconfig.inc.php';
 // start the session
 require SENAYAN_BASE_DIR.'admin/default/session.inc.php';
 require SENAYAN_BASE_DIR.'admin/default/session_check.inc.php';
+require SENAYAN_BASE_DIR.'admin/admin_template/printed_settings.inc.php';
 
 // page title
 $page_title = 'Loan Receipt';
@@ -36,23 +37,23 @@ ob_start();
 ?>
 <style type="text/css">
 #receiptBody {
-  margin: 5px;
-  padding: 5px;
-  color: #000;
-  font-family: serif;
-  width: 8cm;
-  border: 1px dashed #000;
+  margin: <?php echo $receipt_margin; ?>;
+  padding: <?php echo $receipt_padding; ?>;
+  color: <?php echo $receipt_color; ?>;
+  font-family: <?php echo $receipt_font; ?>;
+  width: <?php echo $receipt_width; ?>;
+  border: <?php echo $receipt_border; ?>;
 }
 
 #receiptBody * {
   color: #000;
   font-family: serif;
-  font-size: 7pt;
+  font-size: <?php echo $receipt_fontSize; ?>;
 }
 
 .receiptHeader {
   font-weight: bold;
-  font-size: 8pt;
+  font-size: <?php echo $receipt_header_fontSize; ?>;
 }
 
 table td {
@@ -60,33 +61,51 @@ table td {
 }
 </style>
 <div id="receiptBody">
-    <div id="receiptTitle"><?php echo $sysconf['library_name'] ?><br /><?php echo $sysconf['library_subname'] ?></div>
+    <table width="100%">
+    <tr>
+        <td><div id="receiptTitle"><?php echo $sysconf['library_name'] ?><br /><?php echo $sysconf['library_subname'] ?></div></td>
+        <td><div id="receiptMember"><?php echo $_SESSION['receipt_record']['memberName'] ?> (<?php echo $_SESSION['receipt_record']['memberID'] ?>)</div>
+        <div id="receiptDate"><?php echo $_SESSION['receipt_record']['date'] ?></div></td>
+    </tr>
+    </table>
+    
     <hr />
     <div id="receiptInfo">
-        <div id="receiptMember"><?php echo $_SESSION['receipt_record']['memberName'] ?> <?php echo $_SESSION['receipt_record']['memberID'] ?></div>
-        <div id="receiptDate"><?php echo $_SESSION['receipt_record']['date'] ?></div>
-
         <!-- LOAN -->
         <?php if (isset($_SESSION['receipt_record']['loan']) || isset($_SESSION['receipt_record']['extend'])) { ?>
-        <div class="receiptHeader"><?php echo __('Loan'); ?></div>
+        <div class="receiptHeader">Type of Transaction: <?php echo __('Loan'); ?>/<?php echo __('Extended'); ?> (<?php echo mt_rand(000000000, 999999999); ?>)</div>
         <hr size="1" noshade="noshade" />
         <table width="100%">
         <tr><td>Code</td><td>Title</td><td>Loan</td><td>Due</td></tr>
         <?php
-        foreach ($_SESSION['receipt_record']['loan'] as $loan) {
-            echo '<tr>';
-            echo '<td>'.$loan['itemCode'].'</td>';
-            echo '<td>'.substr($loan['title'], 0, 50).'...</td>';
-            echo '<td>'.$loan['loanDate'].'</td>';
-            echo '<td>'.$loan['dueDate'].'</td>';
-            echo '</tr>';
-        }
+        if (isset($_SESSION['receipt_record']['loan'])) {
+            foreach ($_SESSION['receipt_record']['loan'] as $loan) {
+                echo '<tr>';
+                echo '<td>'.$loan['itemCode'].'</td>';
+                echo '<td>'.substr($loan['title'], 0, $receipt_titleLength);
+                if (strlen($loan['title']) > $receipt_titleLength) {
+                    echo ' ...';
+                }
+                echo '.</td>';
+                echo '<td>'.$loan['loanDate'].'</td>';
+                echo '<td>'.$loan['dueDate'].'</td>';
+                echo '</tr>';
+            }
+        }        
+        
         // loan extend
         if (isset($_SESSION['receipt_record']['extend'])) {
             foreach ($_SESSION['receipt_record']['extend'] as $ext) {
                 echo '<tr>';
                 echo '<td>'.$ext['itemCode'].'</td>';
-                echo '<td>'.substr($ext['title'], 0, 50).'...<br />-- extended --</td>';
+                #echo '<td>'.substr($ext['title'], 0, 50).'...<br />-- extended --</td>';
+                
+                echo '<td>'.substr($ext['title'], 0, $receipt_titleLength);
+                if (strlen($ext['title']) > $receipt_titleLength) {
+                    echo ' ...';
+                }
+                echo '. <strong>(Loan Extended)</strong></td>';
+                
                 echo '<td>'.$ext['loanDate'].'</td>';
                 echo '<td>'.$ext['dueDate'].'</td>';
                 echo '</tr>';
@@ -95,18 +114,33 @@ table td {
         ?>
         </table>
         <?php } ?>
+        
+        <?php
+        # to remove extended items from return session list
+        if (isset($_SESSION['receipt_record']['return']) AND isset($_SESSION['receipt_record']['extend'])) {
+            foreach ($_SESSION['receipt_record']['extend'] as $key => $value) {
+                if ($_SESSION['receipt_record']['extend'][$key]['itemCode'] == $_SESSION['receipt_record']['return'][$key]['itemCode']) {
+                    unset($_SESSION['receipt_record']['return'][$key]);
+                }
+            }
+        }
+        ?>
 
         <!-- RETURN -->
-        <?php if (isset($_SESSION['receipt_record']['return'])) { ?>
-        <div class="receiptHeader"><?php echo __('Return'); ?></div>
+        <?php if (isset($_SESSION['receipt_record']['return']) AND (count($_SESSION['receipt_record']['return']) != 0)) { ?>
+        <div class="receiptHeader">Type of Transaction: <?php echo __('Return'); ?> (<?php echo mt_rand(000000000, 999999999); ?>)</div>
         <hr size="1" noshade="noshade" />
         <table width="100%">
         <tr><td>Code</td><td>Title</td><td>Return</td><td>Ovd.</td></tr>
-        <?php
+        <?php        
         foreach ($_SESSION['receipt_record']['return'] as $ret) {
             echo '<tr>';
             echo '<td>'.$ret['itemCode'].'</td>';
-            echo '<td>'.substr($ret['title'], 0, 50).'...</td>';
+            echo '<td>'.substr($ret['title'], 0, $receipt_titleLength);
+            if (strlen($ret['title']) > $receipt_titleLength) {
+                echo ' ...';
+            }
+            echo '.</td>';
             echo '<td>'.$ret['returnDate'].'</td>';
             if ($ret['overdues']) {
                 echo '<td>'.$ret['overdues']['days'].' days overdue</td>';
@@ -119,6 +153,13 @@ table td {
         </table>
         <?php } ?>
     </div>
+    <hr size="1" noshade="noshade" />
+    <table width="100%">
+        <tr>
+            <td width="50%" align="center">Library Staf<br /><br /><?php echo $_SESSION['realname']; ?></td>
+            <td width="50%" align="center">Library member<br /><br /><?php echo $_SESSION['receipt_record']['memberName']; ?></td>
+        </tr>
+    </table>
 </div>
 <script type="text/javascript">window.print()</script>
 <?php
