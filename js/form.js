@@ -104,6 +104,62 @@ var chboxFormSubmit = function(strFormID) {
     }
 }
 
+/* begin of sutriadi-patch */
+var chboxFormSubmitPrintPatch = function(strFormID)
+{
+    var formObj = $(strFormID);
+    formObj.action = arguments[2] != 'default' ? arguments[2] : formObj.action;
+    //~ formObj.action = formObj.action + '?card=1';
+    formObj.target = 'card_patch';
+    
+    // get all checkbox element
+    var chkBoxs = formObj.getInputs('checkbox');
+
+    if (!chkBoxs) {
+        return;
+    } else {
+        var confirmMsg = 'Are You Sure Want to PRINT Selected Data?';
+        if (arguments[1] != undefined) {
+            confirmMsg = arguments[1];
+        }
+        var isConfirm = confirm(confirmMsg);
+        if (isConfirm) {
+            // submit the form
+            formObj.submit();
+        }
+    }
+    //~ formObj.action = formObjAct;
+    formObj.target = 'submitExec';
+}
+
+var chboxFormSubmitDownloadPatch = function(strFormID)
+{
+    var formObj = $(strFormID);
+    formObj.action = arguments[2] != 'default' ? arguments[2] : formObj.action;
+    //~ formObj.action = formObj.action + '?card=1';
+    formObj.target = '_blank';
+    
+    // get all checkbox element
+    var chkBoxs = formObj.getInputs('checkbox');
+
+    if (!chkBoxs) {
+        return;
+    } else {
+        var confirmMsg = 'Are You Sure Want to DOWNLOAD Selected Data?';
+        if (arguments[1] != undefined) {
+            confirmMsg = arguments[1];
+        }
+        var isConfirm = confirm(confirmMsg);
+        if (isConfirm) {
+            // submit the form
+            formObj.submit();
+        }
+    }
+    //~ formObj.action = formObjAct;
+    formObj.target = 'submitExec';
+}
+/* end of sutriadi-patch */
+
 /* function to serialize all checkbox element in form */
 var serializeChbox = function(strParentID) {
     var serialized = '';

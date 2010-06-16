@@ -140,7 +140,7 @@ $sysconf['baseurl'] = '';
 // change below setting according to your database configuration
 define('DB_HOST', 'localhost');
 define('DB_PORT', '3306');
-define('DB_NAME', 'stable14');
+define('DB_NAME', 'smabasa');
 define('DB_USERNAME', 'senayanuser');
 define('DB_PASSWORD', 'password_senayanuser');
 // we prefer to use mysqli extensions if its available
@@ -389,7 +389,7 @@ $sysconf['watermark']['opacity'] = '50'; #is opacity from 0 (transparent) to 100
 /**
  * UCS global settings
  */
-$sysconf['ucs']['enable'] = false;
+$sysconf['ucs']['enable'] = true;
 // auto delete same record on UCS?
 $sysconf['ucs']['auto_delete'] = true;
 // auto insert new record to UCS?
@@ -398,7 +398,7 @@ $sysconf['ucs']['auto_insert'] = false;
 /**
  * Peer to peer server config
  */
-$sysconf['p2pserver'][1] = array('uri' => 'http://127.0.0.1/senayan2-stable14', 'name' => 'SLiMS Library');
+$sysconf['p2pserver'][1] = array('uri' => 'http://localhost/s3st14_dev', 'name' => 'SLiMS Library');
 
 // check if session is auto started and then destroy it
 if ($is_auto = @ini_get('session.auto_start')) { define('SESSION_AUTO_STARTED', $is_auto); }

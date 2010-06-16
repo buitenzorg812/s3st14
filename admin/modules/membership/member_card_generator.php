@@ -151,6 +151,7 @@ if (isset($_GET['action']) AND $_GET['action'] == 'print') {
     $html_str .= '</style>'."\n";
     $html_str .= '</head>'."\n";
     $html_str .= '<body>'."\n";
+    $html_str .= '<a href="#" onclick="window.print()">Print Again</a>'."\n";
     $html_str .= '<table style="margin: 0; padding: 0;" cellspacing="0" cellpadding="0">'."\n";
     // loop the chunked arrays to row
     foreach ($chunked_card_arrays as $card_rows) {
@@ -247,6 +248,18 @@ $datagrid->table_header_attr = 'class="dataListHeader" style="font-weight: bold;
 // edit and checkbox property
 $datagrid->edit_property = false;
 $datagrid->chbox_property = array('itemID', __('Add'));
+// begin of sutriadi patch
+//~ cetak kartu
+$datagrid->spprint_property = array('itemID', __('PRINT'));
+$datagrid->chbox_action_spprint_button = __('Print Items');
+$datagrid->chbox_confirm_spprint_msg = __('Print selected items?');
+$datagrid->chbox_action_spprint_url = SENAYAN_WEB_ROOT_DIR . "admin/spatch/card2nd.php";
+//~ download dokumen
+$datagrid->spdownload_property = array('itemID', __('DOWNLOAD'));
+$datagrid->chbox_action_spdownload_button = __('Get Document');
+$datagrid->chbox_confirm_spdownload_msg = __('Get document selected items?');
+$datagrid->chbox_action_spdownload_url = SENAYAN_WEB_ROOT_DIR . "admin/spatch/download.php";
+// end of sutriadi patch
 $datagrid->chbox_action_button = __('Add To Print Queue');
 $datagrid->chbox_confirm_msg = __('Add to print queue?');
 $datagrid->column_width = array('10%', '70%', '15%');

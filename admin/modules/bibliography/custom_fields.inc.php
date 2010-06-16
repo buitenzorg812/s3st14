@@ -28,7 +28,7 @@
  * same settings as biblio_id inside biblio table without AUTO_INCREMENT option and unique indexing feature
  */
 
-/* $biblio_custom_fields = array(
+ $biblio_custom_fields = array(
 	'biblio_custom_test' => array(
 		'dbfield' => 'biblio_custom_test', // name of field in 'biblio_custom' table in database, make sure you already define it!
 		'label' => __('Test'), // label of field in form
@@ -39,7 +39,7 @@
 		'indexed' => true, // NOT APPLICABLE YET, FOR FUTURE RELEASE USE
 		'width' => 50), // width of field in form for 'text' field type, maximum is 100
 
-	'customfield2' => array(
+/*	'customfield2' => array(
 		'dbfield' => 'customfield2',
 		'label' => __('Custom Field 2'),
 		'type' => 'dropdown',
@@ -78,6 +78,6 @@
 		'label' => __('Custom Field 5'),
 		'default' => date('Y-m-d'),
 		'type' => 'date')
-
-);*/
+*/
+);
 ?>

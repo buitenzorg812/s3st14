@@ -58,6 +58,8 @@ class simbio_datagrid extends simbio_table
     public $select_flag = '';
     public $chbox_property;
     public $edit_property;
+	public $spprint_property = array(); // sutriadi-patch
+	public $spdownload_property = array(); // sutriadi-patch
     public $chbox_action_button = false;
     public $chbox_confirm_msg = false;
     public $current_page = 1;
@@ -366,8 +368,24 @@ class simbio_datagrid extends simbio_table
                 $_button_grp .= '<td><input type="button" onclick="chboxFormSubmit(\''.$this->table_name.'\', \''.$this->chbox_confirm_msg.'\')" value="'.$this->chbox_action_button.'" class="button" /> '
                     .'<input type="button" onclick="checkAll(\''.$this->table_name.'\', false)" value="'.$_check_all.'" class="button" /> '
                     .'<input type="button" onclick="checkAll(\''.$this->table_name.'\', true)" value="'.$_uncheck_all.'" class="button" /> '
-                    .'</td>';
+                    //~ .'</td>';
+					.'';
             }
+			// begin of sutriadi-patch
+			$uid = $_SESSION['uid'];
+			$uname = $_SESSION['uname'];
+			$realname = $_SESSION['realname'];
+			$addargs = "$uid, $uname, $realname";
+			if ( ! empty($this->spprint_property)) {
+				$action_url = $this->chbox_action_spprint_url ? $this->chbox_action_spprint_url : 'default';
+				$_button_grp .= '<input type="button" onclick="chboxFormSubmitPrintPatch(\''.$this->table_name.'\', \''.$this->chbox_confirm_spprint_msg.'\', \''.$action_url.'\', \''.$addargs.'\')" value="'.$this->chbox_action_spprint_button.'" class="button" /> ';
+			}
+			if ( ! empty($this->spdownload_property)) {
+				$action_url = $this->chbox_action_spdownload_url ? $this->chbox_action_spdownload_url : 'default';
+				$_button_grp .= '<input type="button" onclick="chboxFormSubmitDownloadPatch(\''.$this->table_name.'\', \''.$this->chbox_confirm_spdownload_msg.'\', \''.$action_url.'\', \''.$addargs.'\')" value="'.$this->chbox_action_spdownload_button.'" class="button" /> ';
+			}
+			$_button_grp .= '</td>';
+			// end of sutriadi-patch
 
             // paging
             if ($_paging) {
